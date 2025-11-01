@@ -1,0 +1,35 @@
+.footer {
+  width: 100%;
+  background-color: #ffffff;
+  border-top: 1px solid #e5e7eb;
+}
+.container {
+  --max-width: 60%;
+  --padding: 2rem;
+  width: min(var(--max-width), 100% - var(--padding));
+  margin-inline: auto;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.copy {
+  font-size: 14px;
+  color: #666;
+}
+.socials {
+  display: flex;
+  gap: 12px;
+}
+.socials a {
+  color: #111;
+  text-decoration: none;
+  font-size: 14px;
+}
+@media (max-width: 70em) {
+  .container {
+    --max-width: 90%;
+  }
+}
+

@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { opacity, slideUp } from "./anim";
 
-const words = ["7", "6", "5", "4", "3", "2", "1", "Hello"];
+const words = ["7", "6", "5", "4", "3", "2", "1", "Hello World"];
 
-const index = () => {
+const index = ({ onComplete }) => {
   const [index, setIndex] = useState(0);
   const [dimension, setDimension] = useState({ width: 0, height: 0 });
 
@@ -15,15 +15,18 @@ const index = () => {
   }, []);
 
   useEffect(() => {
-    if (index == words.length - 1) return;
-    setTimeout(
-      () => {
+    if (index < words.length - 1) {
+      const id = setTimeout(() => {
         setIndex(index + 1);
-      },
-      index == 0 ? 1000 : 150
-    );
+      }, index == 0 ? 1000 : 150);
+      return () => clearTimeout(id);
+    }
+    // Countdown finished, notify parent once
+    if (typeof onComplete === "function") {
+      onComplete();
+    }
     document.body.style.overflow = "";
-  }, [index]);
+  }, [index, onComplete]);
 
   const initialPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${
     dimension.height

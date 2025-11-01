@@ -15,7 +15,12 @@ const index = () => {
         </div>
         <div className={styles.contact_one}>
           <div className={styles.contact_image}>
-            <Image src={boy} className={styles.contact_main_img} />
+            <Image
+              src={boy}
+              alt="Profile avatar"
+              className={styles.contact_main_img}
+              sizes="80px"
+            />
           </div>
           <h1>Let's work</h1>
         </div>
@@ -28,12 +33,12 @@ const index = () => {
           </Rounded>
         </div>
         <div className={styles.contact_bt_div}>
+        <a href="mailto:prof.juneidshaikh18@gmail.com" style={{textDecoration:'none', color:'#000'}}>
           <Rounded>
             <p>Don't be shy!Hit me up!</p>
           </Rounded>
-          <Rounded>
-            <p>aftab7t7@gmail.com</p>
-          </Rounded>
+        </a>
+          
         </div>
       </div>
     </main>

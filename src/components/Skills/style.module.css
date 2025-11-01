@@ -1,0 +1,47 @@
+.skills {
+  width: 100%;
+  background: linear-gradient(180deg, #ffffff 0%, #ffecf998 100%);
+}
+.container {
+  --max-width: 60%;
+  --padding: 2rem;
+  width: min(var(--max-width), 100% - var(--padding));
+  margin-inline: auto;
+  padding-top: 10vh;
+  padding-bottom: 10vh;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.headerRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.headerRow > p {
+  font-size: 20px;
+}
+.headerRow > div {
+  width: 20%;
+  height: 1px;
+  background-color: rgb(0, 0, 0);
+}
+.list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.badge {
+  border: 1px solid rgb(136, 136, 136);
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  background-color: #ffffff;
+}
+@media (max-width: 70em) {
+  .container {
+    --max-width: 90%;
+  }
+}
+

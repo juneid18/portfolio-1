@@ -1,9 +1,52 @@
-import styles from "./style.module.css";
+"use client";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import code from "../../assets/code.jpg";
-import prtwo from "../../assets/prtwo.png";
-import prthree from "../../assets/prthree.png";
-const index = () => {
+import styles from "./style.module.css";
+import { client } from "@/utils/Client";
+import imageUrlBuilder from "@sanity/image-url";
+import Rounded from "../../common/RoundedButton";
+
+const builder = imageUrlBuilder(client);
+function urlFor(source) {
+  return builder.image(source).url();
+}
+
+const Projects = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(4); // how many projects to load initially
+  const [hasMore, setHasMore] = useState(true);
+
+  useEffect(() => {
+    const getProjects = async () => {
+      try {
+        const query = `*[_type == "project"] | order(publishedAt desc)[0...${visibleCount}]`;
+        const data = await client.fetch(query);
+
+        setProjects(data);
+
+        // check if more projects exist
+        const totalQuery = `count(*[_type == "project"])`;
+        const total = await client.fetch(totalQuery);
+        setHasMore(data.length < total);
+      } catch (err) {
+        console.error("Project fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getProjects();
+  }, [visibleCount]); // re-run when visibleCount changes
+
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + 4); // load 4 more each click
+  };
+
+  if (loading) {
+    return <p className={styles.loading}>Loading projects...</p>;
+  }
+
   return (
     <main className={styles.project_main} id="projects">
       <h1 className={styles.project_big_text}>WOR</h1>
@@ -11,105 +54,67 @@ const index = () => {
 
       <div className={styles.container}>
         <div className={styles.project_title}>
-          <p>Some Things I've Built </p>
+          <p>Some Things I've Built</p>
           <div></div>
         </div>
 
-        <div className={styles.project_con}>
-          <div className={styles.project_left}>
-            <Image src={code} className={styles.pr_image} />
-          </div>
-          <div className={styles.project_right}>
-            <p className={styles.project_right_small_p_text}>
-              Featured Project
-            </p>
-            <h2 className={styles.project_right_h2_text}>Mystic mist Theme</h2>
-            <div className={styles.project_right_overflow}>
-              Mystic Mist is a vs-code theme that evoke a palette of dusky
-              purples, deep blues, and misty grays.
+        {projects.map((project) => (
+          <div key={project._id} className={styles.project_con}>
+            {/* Left: Project Image */}
+            <div className={styles.project_left}>
+              {project.poster?.asset && (
+                <Image
+                  src={urlFor(project.poster.asset._ref)}
+                  alt={project.title}
+                  className={styles.pr_image}
+                  width={600}
+                  height={400}
+                />
+              )}
             </div>
-            <div className={styles.project_right_p_tech_used}>
-              <p>Vs Code </p>
-              <a
-                href="https://marketplace.visualstudio.com/items?itemName=noxhill.mysticmist"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.web_link}
-              >
-                Visit Web
-              </a>
-            </div>
-          </div>
-        </div>
 
-        <div className={styles.hr_project}></div>
+            {/* Right: Project Info */}
+            <div className={styles.project_right}>
+              <p className={styles.project_right_small_p_text}>
+                Featured Project
+              </p>
+              <h2 className={styles.project_right_h2_text}>{project.title}</h2>
+              <div className={styles.project_right_p_tech_used}>
+                <p>{project.detail}</p>
+                {project.url && (
+                  <a
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.web_link}
+                  >
+                    Visit Web
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
 
-        <div className={styles.project_con_two}>
-          <div className={styles.project_left_two}>
-            <p className={styles.project_right_small_p_text_two}>
-              Featured Project
-            </p>
-            <h2 className={styles.project_right_h2_text_two}>
-              Video Calling App
-            </h2>
-            <div className={styles.project_left_overflow_two}>
-              Discover seamless video talks with our app. Say hello to
-              effortless connections.
-            </div>
-            <div className={styles.project_right_p_tech_used_two}>
-              <p>Next js</p>
-              <p>Tailwind</p>
-              <p>Clerk</p>
-              <p>Shadcn</p>
-              <a
-                href="https://sight-sync.vercel.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.web_link}
-              >
-                Visit Web
-              </a>
+        {/* Load More Button */}
+        {hasMore && (
+          <div className={styles.load_more_container}>
+            <div onClick={handleLoadMore} style={{
+                display: "flex",
+                alignItems: "left",
+                justifyContent: "left",
+                gap: "10px",
+                fontSize: "17px",
+              }}>
+              <Rounded>
+                <p>Load More</p>
+              </Rounded>
             </div>
           </div>
-          <div className={styles.project_right_two}>
-            <Image src={prtwo} className={styles.pr_image} />
-          </div>
-        </div>
-
-        <div className={styles.hr_project}></div>
-
-        <div className={styles.project_con}>
-          <div className={styles.project_left}>
-            <Image src={prthree} className={styles.pr_image} />
-          </div>
-          <div className={styles.project_right}>
-            <p className={styles.project_right_small_p_text}>
-              Featured Project
-            </p>
-            <h2 className={styles.project_right_h2_text}>X Clone</h2>
-            <div className={styles.project_right_overflow}>
-              X clone is a web application that replicates the core
-              functionality of the popular social media platform.
-            </div>
-            <div className={styles.project_right_p_tech_used}>
-              <p>React</p>
-              <p>Node js</p>
-              <p>Mongo DB</p>
-              <p>Cloudinary</p>
-              <a
-                href="https://tweet-49rd.onrender.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.web_link}
-              >
-                Visit Web
-              </a>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </main>
   );
 };
 
-export default index;
+export default Projects;

@@ -34,8 +34,13 @@
   clip-path: polygon(0 0, 100% 0%, 100% 0%, 0% 0%);
 }
 
+.menu-links-item-holder {
+  display: inline-block; /* or block */
+}
+
+
 .menu-links-item-holder > a {
-  font-size: 8vw;
+  font-size: 7vw;
   color: white;
   text-decoration: none;
   cursor: pointer;
@@ -51,8 +56,12 @@
   position: absolute;
   right: 3rem;
   bottom: 1rem;
-  cursor: pointer;
+  cursor: pointer;  
+  font-size: 10rem;
   color: aliceblue;
+  background: none;
+  outline: none;
+  border: none;
 }
 
 .menu-close-icon > p {

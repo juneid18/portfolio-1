@@ -5,26 +5,24 @@ import { useGSAP } from "@gsap/react";
 import Rounded from "../../common/RoundedButton";
 import { HiBars2 } from "react-icons/hi2";
 import "./menu.css";
+
 const Menu = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const container = useRef();
-
-  const t1 = useRef();
+  const container = useRef(null);
+  const t1 = useRef(null);
 
   const smoothScrollTo = (targetId) => {
     const target = document.getElementById(targetId);
     if (target) {
-      window.scrollTo({
-        top: target.offsetTop,
-        behavior: "smooth",
-      });
+      window.scrollTo({ top: target.offsetTop, behavior: "smooth" });
     }
   };
+
   const toggleMenu = (targetId) => {
-    setIsMenuOpen(!isMenuOpen);
-    smoothScrollTo(targetId);
+    setIsMenuOpen((prev) => !prev);
+    if (targetId) smoothScrollTo(targetId);
   };
+
   useGSAP(
     () => {
       gsap.set(".menu-links-item-holder", { y: 150 });
@@ -45,61 +43,77 @@ const Menu = () => {
     },
     { scope: container }
   );
+
   useEffect(() => {
     if (isMenuOpen) {
-      t1.current.play();
+      t1.current && t1.current.play();
       document.body.style.overflow = "hidden";
     } else {
-      t1.current.reverse();
+      t1.current && t1.current.reverse();
       document.body.style.overflow = "";
     }
   }, [isMenuOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && isMenuOpen) setIsMenuOpen(false);
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isMenuOpen]);
+
   return (
     <div className="menu-container" ref={container}>
+      {/* Top Bar */}
       <div className="menu-bar">
-        <div className="menu-open" onClick={toggleMenu}>
+        <button
+          onClick={() => toggleMenu()}
+          aria-haspopup="dialog"
+          aria-expanded={isMenuOpen}
+          aria-controls="site-menu-overlay"
+        >
           <Rounded className="contact_getintouch_circle">
-            <p style={{ zIndex: "23" }}>
-              <HiBars2 />
-            </p>
+            <HiBars2 />
           </Rounded>
-        </div>
+        </button>
       </div>
 
-      <div className="menu-overlay">
-        <div className="menu-links">
-          <div className="menu-links-item">
-            <div className="menu-links-item-holder" onClick={toggleMenu}>
-              <a href="#home" onClick={() => toggleMenu("home")}>
-                Home
-              </a>
+      {/* Overlay */}
+      <div
+        id="site-menu-overlay"
+        className={`menu-overlay${isMenuOpen ? " open" : ""}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site navigation"
+        aria-hidden={isMenuOpen ? "false" : "true"}
+      >
+        <nav className="menu-links">
+          {[
+            { label: "Home", id: "home" },
+            { label: "About", id: "about" },
+            { label: "Skills", id: "skills" },
+            { label: "Projects", id: "projects" },
+            { label: "Contact", id: "contact" },
+          ].map(({ label, id }) => (
+            <div key={id} className="menu-links-item">
+              <div
+                className="menu-links-item-holder"
+                onClick={() => toggleMenu(id)}
+              >
+                <a href={`#${id}`}>{label}</a>
+              </div>
             </div>
-          </div>
-          <div className="menu-links-item">
-            <div className="menu-links-item-holder" onClick={toggleMenu}>
-              <a href="#about" onClick={() => toggleMenu("about")}>
-                About
-              </a>
-            </div>
-          </div>
-          <div className="menu-links-item">
-            <div className="menu-links-item-holder" onClick={toggleMenu}>
-              <a href="#projects" onClick={() => toggleMenu("projects")}>
-                Projects
-              </a>
-            </div>
-          </div>
-          <div className="menu-links-item">
-            <div className="menu-links-item-holder" onClick={toggleMenu}>
-              <a href="#contact" onClick={() => toggleMenu("contact")}>
-                Contact
-              </a>
-            </div>
-          </div>
-        </div>
-        <div className="menu-close-icon" onClick={toggleMenu}>
-          <p>&#x2715;</p>
-        </div>
+          ))}
+        </nav>
+
+        {/* Close Button */}
+        <button
+          className="menu-close-icon"
+          onClick={() => toggleMenu()}
+          aria-label="Close menu"
+        >
+          ✕
+        </button>
       </div>
     </div>
   );

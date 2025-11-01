@@ -24,13 +24,12 @@ const index = ({ isLoading }) => {
       <div className={styles.container}>
         <div className={styles.textzone}>
           <h1 className={styles.h1}>
-            Full-Stack React Developer
+            Full-Stack Developer
             <Arrow isLoading={isLoading} />
           </h1>
 
           <p className={styles.graytext}>
-            Hi, I'm Aftab. A passionate Full-Stack React Developer based in
-            India. 📍
+            Hi, I’m Juneid — a passionate Full-Stack Developer from India, building modern and impactful digital experiences.
           </p>
           <Rounded>
             <p
@@ -53,7 +52,13 @@ const index = ({ isLoading }) => {
         <div className={styles.landing_pic_div}>
           <Ola />
           <div className={styles.landing_pic}>
-            <Image src={home} className={styles.landing_main_img} />
+            <Image
+              src={home}
+              alt="Juneid portrait with organic blob mask"
+              className={styles.landing_main_img}
+              priority
+              sizes="(max-width: 768px) 260px, (max-width: 1200px) 330px, 330px"
+            />
           </div>
         </div>
         <div className={styles.scroll_down}>
